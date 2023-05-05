@@ -4,7 +4,7 @@ export default function Resumen() {
   const { carrito, handleTotalCarrito, handleSubmitNuevaOrden} = useKiosko();
   const handleSubmit = e => {
     e.preventDefault();
-    handleSubmitNuevaOrden(logout);
+    handleSubmitNuevaOrden();
   }
   
   return (

@@ -5,7 +5,7 @@ import axios from "axios";
 import useKiosko from "../hooks/useKiosko";
 export default function Login() {
   const navigate = useNavigate();
-  const {login } = useKiosko()
+  const {login, setEmailUser } = useKiosko()
   const emailRef = createRef();
   const passwordRef = createRef();
 
@@ -35,7 +35,6 @@ export default function Login() {
     }
     validate(datos);
     if(errores.email || errores.password )return setErrores({ email: "" , password: "Email o Password no valido" })
-    console.log(datos)
     const autenticado = await validacionBack(datos);
     if (autenticado) {
       login()
@@ -51,6 +50,7 @@ export default function Login() {
       const res = await axios.post('http://localhost:3000/api/auth/login', { email:datos.email, password:datos.password });
       if (res.data.state) {
         // Autenticación exitosa
+        setEmailUser(res.data.data);
         return true;
       } else {
         // Credenciales incorrectas

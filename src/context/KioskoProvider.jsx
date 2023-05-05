@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
 const KioskoContext = createContext();
@@ -11,7 +12,9 @@ function KioskoProvider({ children }) {
   const [producto, setProducto] = useState({});
   const [carrito, setCarrito] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [emailUser, setEmailUser] = useState({});
   const login = () => {
+
     setIsAuthenticated(true);
   };
 
@@ -75,11 +78,13 @@ function KioskoProvider({ children }) {
     toast.error("Producto Eliminado del carrito");
   };
 
-  const handleSubmitNuevaOrden = async (logout)=>{
+  const handleSubmitNuevaOrden = async ()=>{
     try {
-     const {data} = await axios.post("/api/pedidos",
+     const data = await axios.post("http://localhost:3000/api/pedido",
      {
         total: handleTotalCarrito(carrito),
+        email: emailUser.email,
+        usuario_id: emailUser.id,
         productos: carrito.map(producto => {
           return {
             id: producto.id,
@@ -87,14 +92,12 @@ function KioskoProvider({ children }) {
           }
         })
       },)
-
-      toast.success(data.message)
+      toast.success(data.data.mensaje)
       setTimeout(() => {
         setCarrito([])
       }, 1000);
       setTimeout(() => {
-        localStorage.removeItem("AUTH_TOKEN");
-        logout();
+        setIsAuthenticated(false);
       }, 3000);
     } catch (error) {
       console.log(error)
@@ -136,7 +139,9 @@ function KioskoProvider({ children }) {
         handleClickCompletarPedido,
         handleClickPedidoAgotado,
         isAuthenticated,
-        login
+        login,
+        setEmailUser,
+        
       }}
     >
       {children}
