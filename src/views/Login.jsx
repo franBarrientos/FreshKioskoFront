@@ -10,40 +10,47 @@ export default function Login() {
   const passwordRef = createRef();
 
   const [errores, setErrores] = useState({});
-  const validate = (objForm) => {
-    if (!objForm.email) {
-      return setErrores({ ...errores, email: "Ingrese email" });
-    } else if (/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(objForm.email)) {
-       setErrores({ ...errores, email: "" });
-    } else {
-      return setErrores({ ...errores, email: "Ingrese email válido" });
-    }
 
+  const validate = (objForm) => {
+    let errors = {};
+  
+    if (!objForm.email) {
+      errors.email = "Ingrese email";
+    } else if (!/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(objForm.email)) {
+      errors.email = "Ingrese email válido";
+    }
+  
     if (!objForm.password) {
-        return setErrores({ email: "" , password: "Ingrese password" });
-      } 
-     else {
-        return setErrores({ ...errores, password: "" });
-      }
+      errors.password = "Ingrese password";
+    }
+  
+    return Object.keys(errors).length === 0 ? { isValid: true } : { isValid: false, errors };
   };
+  
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setErrores({ email: "" , password: "" })
     const datos = {
       email: emailRef.current.value,
       password: passwordRef.current.value,
     }
-    validate(datos);
-    if(errores.email || errores.password )return setErrores({ email: "" , password: "Email o Password no valido" })
+    const validation = validate(datos);
+    if (validation.isValid) {
+      setErrores({});
     const autenticado = await validacionBack(datos);
     if (autenticado) {
       login()
       navigate("/")
     } else {
-      return setErrores({ email: "" , password: "Ingrese password valido" })
+      setErrores({ email: "" , password: "Ingrese password valido" }) // actualizar estado de errores aquí
+      return 
     }
+  }else{
+    setErrores({ email: "" , password: "Ingrese password valido" }) // actualizar estado de errores aquí
+
   }
-  
+}
 
   const validacionBack = async (datos) => {
     try {
