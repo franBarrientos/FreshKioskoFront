@@ -5,12 +5,12 @@ import axios from "axios";
 import useKiosko from "../hooks/useKiosko";
 export default function Login() {
   const navigate = useNavigate();
-  const {login, setEmailUser } = useKiosko()
+  const {login, setEmailUser, emailUser, setToken } = useKiosko()
   const emailRef = createRef();
   const passwordRef = createRef();
 
   const [errores, setErrores] = useState({});
-
+  
   const validate = (objForm) => {
     let errors = {};
   
@@ -39,9 +39,14 @@ export default function Login() {
     if (validation.isValid) {
       setErrores({});
     const autenticado = await validacionBack(datos);
-    if (autenticado) {
-      login()
-      navigate("/")
+    if (autenticado != undefined) {
+        if(autenticado === 0){
+          login()
+          navigate("/admin")
+        }else{
+          login()
+          navigate("/")
+        }
     } else {
       setErrores({ email: "" , password: "Ingrese password valido" }) // actualizar estado de errores aquí
       return 
@@ -54,19 +59,22 @@ export default function Login() {
 
   const validacionBack = async (datos) => {
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', { email:datos.email, password:datos.password });
-      if (res.data.state) {
+      const {data} = await axios.post('http://localhost:3000/api/auth/login', { email:datos.email, password:datos.password });
+      if (data.body.state) {
         // Autenticación exitosa
-        setEmailUser(res.data.data);
-        return true;
+        setToken(data.body.token);
+        setEmailUser(data.body.data);
+        if(data.body.data.role == 0){
+          return 0
+        }else{
+          return 1
+        };
       } else {
         // Credenciales incorrectas
-        console.log(res.data.state)
-        return false;
+        return undefined;
       }
     } catch (err) {
-      console.log(err);
-      return false;
+      return undefined;
     }
   };
 

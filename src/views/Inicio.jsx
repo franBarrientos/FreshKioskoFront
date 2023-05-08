@@ -1,32 +1,35 @@
 import Producto from "../components/Producto";
 import useKiosko from "../hooks/useKiosko";
-import useSWR from "swr"
+import useSWR from "swr";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function Inicio() {
-
   const navigate = useNavigate();
   const { categoriaActual, isAuthenticated } = useKiosko();
 
-  if(!isAuthenticated){
-    navigate("/auth/login")}
-
+  if (!isAuthenticated) {
+    navigate("/auth/login");
+  }
 
   //consulta SWR
-  const fetcher = ()=> axios("http://localhost:3000/api/producto")
-  .then(data => data.data)
+  const fetcher = () =>
+    axios("http://localhost:3000/api/producto").then((data) => data.data);
 
+  const { data, error, isLoading } = useSWR(
+    "http://localhost:3000/api/producto",
+    fetcher,
+    {
+      refreshInterval: 1000,
+    }
+  );
+  if (isLoading) return "Cargando...";
 
-  const { data, error, isLoading } = useSWR("http://localhost:3000/api/producto", fetcher, {
-    refreshInterval: 1000
-  })
-if(isLoading) return "Cargando..."
-
-
-  const productos = data.filter(producto => producto.categoria_id === categoriaActual.id)
+  const productos = data.body.filter(
+    (producto) => producto.categoria_id === categoriaActual.id
+  );
   //return mientras espera los datos de axios
-  
+
   return (
     <>
       <div className="flex flex-col items-center my-5">
@@ -38,7 +41,7 @@ if(isLoading) return "Cargando..."
 
       <div className=" grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         {productos.map((producto) => (
-          <Producto producto={producto} key={producto.id} botonAgregar={true}/>
+          <Producto producto={producto} key={producto.id} botonAgregar={true} />
         ))}
       </div>
     </>

@@ -7,6 +7,7 @@ import Login from "./views/Login";
 import Ordenes from "./views/Ordenes";
 import Productos from "./views/Productos";
 import Registro from "./views/Registro";
+import Pedidos from "./views/Pedidos";
 const router = createBrowserRouter([
     {
         path:"/",
@@ -17,6 +18,22 @@ const router = createBrowserRouter([
                 element: <Inicio/>
             }
         ]
+    },
+    {
+
+        path:"/admin",
+        element:<AdminLayout />,
+        children: [
+            {
+                path: "/admin/pedidos",
+                element: <Pedidos />
+            },
+            {
+                path:"/admin/productos",
+                element: <Productos />
+            }
+        ]
+
     },
     {
         path:"/auth",
@@ -32,7 +49,7 @@ const router = createBrowserRouter([
             }
         ]
     },
-    {
+    /* {
         path: "/admin",
         element: <AdminLayout/>,
         children: [
@@ -45,7 +62,7 @@ const router = createBrowserRouter([
                 element:<Productos/>
             }
         ]
-    }
+    } */
 ])
 
 export default router

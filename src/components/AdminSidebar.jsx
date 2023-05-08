@@ -1,28 +1,29 @@
-import { Link } from "react-router-dom";  
+import { Link } from "react-router-dom"
+import useKiosko from "../hooks/useKiosko";
+
 export default function AdminSidebar() {
-    const {logout} = useAuth({middleware: "auth"});
+  const { categoriaAdmin, setCategoriaAdmin} = useKiosko()
+  const handlePedido = ()=>{
+    event.preventDefault();
+    setCategoriaAdmin(0);
+  }
+  const handleProducto = ()=>{
+    event.preventDefault();
+    setCategoriaAdmin(1);
+  }
   return (
-    <aside className=" md:w-72 h-screen">
-      <div className=" p-4">
-        <img src="/img/logo.svg" alt="img logo" className="w-40" />
-      </div>
-      <nav className=" flex flex-col gap-5 p-4">
-        <Link to="/admin" className="font-bold text-2xl">
-          Ordenes
+    <aside className=" flex flex-col w-full md:w-44 gap-2 text-center">
+        <div className="md:w-44 p-3">
+            <img src="../img/logo.svg" alt="logo svg" className=" w-40" />
+        </div>
+        <Link onClick={handlePedido} to="/admin/pedidos" className="text-xl">
+            Pedidos
         </Link>
-        <Link to="/admin/productos" className="font-bold text-2xl">
-          Productos
+        <Link onClick={handleProducto} to="/admin/productos" className="text-xl">
+            Productos
         </Link>
-      </nav>
-      <div className=" my-5 px-5">
-        <button
-          type="buttton"
-          className=" bg-red-500 p-3 w-full text-lg text-white hover:bg-red-700 hover:cursor-pointer"
-          onClick={logout}
-        >
-          Cerrar Sesion
-        </button>
-      </div>
+     
+
     </aside>
-  );
+  )
 }

@@ -13,6 +13,9 @@ function KioskoProvider({ children }) {
   const [carrito, setCarrito] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [emailUser, setEmailUser] = useState({});
+  const [categoriaAdmin, setCategoriaAdmin] = useState(0)
+  const [productoAdmin, setProductoAdmin] = useState({})
+  const [token, setToken] = useState("");
   const login = () => {
 
     setIsAuthenticated(true);
@@ -21,8 +24,8 @@ function KioskoProvider({ children }) {
   const fetchCategorias = async()=>{
       try {
       const {data} = await axios("http://localhost:3000/api/categorias")
-      setCategorias(data)
-      setCategoriaActual(data[0])
+      setCategorias(data.body)
+      setCategoriaActual(data.body[0])
     } catch (error) {
       console.log(error)
     }
@@ -80,7 +83,7 @@ function KioskoProvider({ children }) {
 
   const handleSubmitNuevaOrden = async ()=>{
     try {
-     const data = await axios.post("http://localhost:3000/api/pedido",
+     const {data} = await axios.post("http://localhost:3000/api/pedido",
      {
         total: handleTotalCarrito(carrito),
         email: emailUser.email,
@@ -92,7 +95,7 @@ function KioskoProvider({ children }) {
           }
         })
       },)
-      toast.success(data.data.mensaje)
+      toast.success(data.body.mensaje)
       setTimeout(() => {
         setCarrito([])
       }, 1000);
@@ -141,7 +144,13 @@ function KioskoProvider({ children }) {
         isAuthenticated,
         login,
         setEmailUser,
-        
+        emailUser,
+        categoriaAdmin,
+        setCategoriaAdmin,
+        productoAdmin,
+        setProductoAdmin,
+        setToken,
+        token
       }}
     >
       {children}
