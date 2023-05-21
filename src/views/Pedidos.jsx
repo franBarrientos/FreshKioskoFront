@@ -1,17 +1,17 @@
 import Pedido from "../components/Pedido";
 import axios from "axios";
 import useSWR from "swr";
-import useKiosko from "../hooks/useKiosko";
-
+import { useState } from "react";
 export default function Pedidos() {
-const { token } = useKiosko()
+  const [jwtToken] = useState(localStorage.getItem('jwtToken'));
+
   //consulta SWR
   const fetcher = () =>
     axios(
       "http://localhost:3000/api/admin/pedidos",
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${jwtToken}`,
         },
       },
     ).then((data) => data);
@@ -21,7 +21,7 @@ const { token } = useKiosko()
       fetcher,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${jwtToken}`,
         },
         refreshInterval: 1000,
       }

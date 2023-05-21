@@ -1,7 +1,10 @@
 import Categoria from "./Categoria";
 import useKiosko from "../hooks/useKiosko";
 export default function Sidebar() {
-  const { categorias, categoria, emailUser} = useKiosko();
+  const { categorias, emailUser, setCarrito} = useKiosko();
+  const cancelarOrden = ()=>{
+    setCarrito([]);
+  }
   return (
     <aside className=" md:w-72">
       <div className=" p-4">
@@ -17,7 +20,7 @@ export default function Sidebar() {
         <button
           type="buttton"
           className=" bg-red-500 p-3 w-full text-lg text-white hover:bg-red-700 hover:cursor-pointer"
-          /* onClick={logout} */
+          onClick={cancelarOrden}
         >
           Cancelar Orden
         </button>

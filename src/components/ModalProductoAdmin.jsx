@@ -2,9 +2,11 @@ import axios from "axios";
 import { useState } from "react";
 import useKiosko from "../hooks/useKiosko";
 export default function ModalProductoAdmin() {
-  const { productoAdmin, handleClickModal, token } = useKiosko();
+  const { productoAdmin, handleClickModal } = useKiosko();
   const [precioNuevo, setPrecioNuevo] = useState(productoAdmin.precio);
   const [disponible, setDisponible] = useState(productoAdmin.disponible);
+  const [jwtToken] = useState(localStorage.getItem('jwtToken'));
+
   const classButton = disponible? "mt-5 bg-red-600 hover:bg-red-80 px-5 py-2 my-2 text-white text-xl rounded " : " mt-5 bg-indigo-600 hove:bg-indigo-800  px-5 py-2 my-2 text-white text-xl rounded"
    
  
@@ -16,7 +18,7 @@ export default function ModalProductoAdmin() {
         disponible: disponible ? 0 : 1,
       },{
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${jwtToken}`,
         },
       },);
       setDisponible(disponible ? 0 : 1);

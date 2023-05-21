@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
-import useKiosko from "../hooks/useKiosko";
+import "react-toastify/dist/ReactToastify.css";
+import  {toast}  from "react-toastify";
 export default function Pedido({ pedidoId, email, total, estado, productos }) {
   const [pedidoDespachado, setPedidoDespachado] = useState(false);
-  const { token } = useKiosko();
+  const [jwtToken] = useState(localStorage.getItem('jwtToken'));
+
   const despacharPedido = async () => {
     try {
       const res = await axios.patch(
@@ -13,25 +15,24 @@ export default function Pedido({ pedidoId, email, total, estado, productos }) {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
 
       if (res) {
-        console.log(res);
         setPedidoDespachado(true);
+        toast.success(`Pedido ${pedidoId} de ${email} despachado correctamente!`)
       }
       // Autenticación exitosa
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(productos);
   return (
     <>
       {pedidoDespachado ? null : (
-        <div className="flex flex-col md:w-64 md:h-auto p-3 justify-center items-center gap-3 bg-amber-400 rounded-xl">
+        <div className="flex flex-col md:w-64 md:h-autonn p-3 justify-center items-center gap-3 bg-amber-400 rounded-xl">
           <div className="text-lg text-center">Pedido Id: {pedidoId}</div>
           <div className="text-lg text-center">Email</div>
           <div className="text-lg text-center"> {email}</div>

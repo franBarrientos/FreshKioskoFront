@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import {  toast } from "react-toastify";
+
 import axios from "axios";
 
 const KioskoContext = createContext();
@@ -13,28 +14,27 @@ function KioskoProvider({ children }) {
   const [carrito, setCarrito] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [emailUser, setEmailUser] = useState({});
-  const [categoriaAdmin, setCategoriaAdmin] = useState(0)
-  const [productoAdmin, setProductoAdmin] = useState({})
-  const [token, setToken] = useState("");
-  const login = () => {
+  const [categoriaAdmin, setCategoriaAdmin] = useState(3);
+  const [productoAdmin, setProductoAdmin] = useState({});
+  const [jwtToken] = useState(localStorage.getItem('jwtToken'));
 
+  const login = () => {
     setIsAuthenticated(true);
   };
 
-  const fetchCategorias = async()=>{
-      try {
-      const {data} = await axios("http://localhost:3000/api/categorias")
-      setCategorias(data.body)
-      setCategoriaActual(data.body[0])
+  const fetchCategorias = async () => {
+    try {
+      const { data } = await axios("http://localhost:3000/api/categorias");
+      setCategorias(data.body);
+      setCategoriaActual(data.body[0]);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  useEffect(()=>{
-    fetchCategorias()
-  },[])
-
+  useEffect(() => {
+    fetchCategorias();
+  }, []);
 
   const handleClickCategoria = (id) => {
     const categoria = categorias.filter((categoria) => categoria.id == id)[0];
@@ -81,47 +81,54 @@ function KioskoProvider({ children }) {
     toast.error("Producto Eliminado del carrito");
   };
 
-  const handleSubmitNuevaOrden = async ()=>{
+  const handleSubmitNuevaOrden = async () => {
     try {
-     const {data} = await axios.post("http://localhost:3000/api/pedido",
-     {
-        total: handleTotalCarrito(carrito),
-        email: emailUser.email,
-        usuario_id: emailUser.id,
-        productos: carrito.map(producto => {
-          return {
-            id: producto.id,
-            cantidad: producto.cantidad
-          }
-        })
-      },)
-      toast.success(data.body.mensaje)
+      const { data } = await axios.post(
+        "http://localhost:3000/api/pedido",
+        {
+          total: handleTotalCarrito(carrito),
+          email: emailUser.email,
+          usuario_id: emailUser.id,
+          productos: carrito.map((producto) => {
+            return {
+              id: producto.id,
+              cantidad: producto.cantidad,
+            };
+          }),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      toast.success(data.body.mensaje);
       setTimeout(() => {
-        setCarrito([])
+        setCarrito([]);
       }, 1000);
       setTimeout(() => {
         setIsAuthenticated(false);
       }, 3000);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  const handleClickCompletarPedido = async id => {
+  const handleClickCompletarPedido = async (id) => {
     try {
-      await axios.put(`/api/pedidos/${id}`,null,)
+      await axios.put(`/api/pedidos/${id}`, null);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  const handleClickPedidoAgotado = async id => {
+  const handleClickPedidoAgotado = async (id) => {
     try {
-      await axios.put(`/api/productos/${id}`,null)
+      await axios.put(`/api/productos/${id}`, null);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <KioskoContext.Provider
@@ -134,6 +141,7 @@ function KioskoProvider({ children }) {
         producto,
         handleSetProducto,
         carrito,
+        setCarrito,
         handleAddPedido,
         handleTotalCarrito,
         handleEditarCantidad,
@@ -149,8 +157,6 @@ function KioskoProvider({ children }) {
         setCategoriaAdmin,
         productoAdmin,
         setProductoAdmin,
-        setToken,
-        token
       }}
     >
       {children}

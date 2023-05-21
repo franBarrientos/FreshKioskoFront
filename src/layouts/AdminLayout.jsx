@@ -3,6 +3,8 @@ import AdminSidebar from "../components/AdminSidebar";
 import ModalProductoAdmin from "../components/ModalProductoAdmin";
 import ReactModal from "react-modal";
 import useKiosko from "../hooks/useKiosko";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 //Estilos del modal
 const customStyles = {
   content: {
@@ -28,6 +30,7 @@ export default function AdminLayout() {
         <ReactModal isOpen={modal} style={customStyles}>
         <ModalProductoAdmin />
       </ReactModal>
+      <ToastContainer />
 
   </div>
   )

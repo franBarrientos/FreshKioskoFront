@@ -1,22 +1,23 @@
-import { data } from "autoprefixer";
 import axios from "axios";
 import useSWR from "swr";
+import {  useState } from "react";
+
 import ProductoAdmin from "../components/ProductoAdmin";
-import useKiosko from "../hooks/useKiosko";
 export default function Productos() {
-  const { token } = useKiosko()
-  const fetcher = () => axios("http://localhost:3000/api/admin/productos", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  },).then((data) => data.data);
+  const [jwtToken] = useState(localStorage.getItem("jwtToken"));
+  const fetcher = () =>
+    axios("http://localhost:3000/api/admin/productos", {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }).then((data) => data.data);
 
   const { data, error, isLoading } = useSWR(
     "http://localhost:3000/api/admin/productos",
     fetcher,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
       refreshInterval: 1000,
     }
@@ -33,8 +34,5 @@ export default function Productos() {
         ))}
       </div>
     </div>
-
-    
-
   );
 }

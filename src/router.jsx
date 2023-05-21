@@ -8,6 +8,8 @@ import Ordenes from "./views/Ordenes";
 import Productos from "./views/Productos";
 import Registro from "./views/Registro";
 import Pedidos from "./views/Pedidos";
+import InicioAdmin from "./layouts/InicioAdmin"
+import ProductosAgregar from "./views/ProductosAgregar";
 const router = createBrowserRouter([
     {
         path:"/",
@@ -25,12 +27,20 @@ const router = createBrowserRouter([
         element:<AdminLayout />,
         children: [
             {
+                index: true,
+                element: <InicioAdmin/>
+            },
+            {
                 path: "/admin/pedidos",
                 element: <Pedidos />
             },
             {
                 path:"/admin/productos",
                 element: <Productos />
+            },
+            {
+                path:"/admin/agregar",
+                element: <ProductosAgregar />
             }
         ]
 
