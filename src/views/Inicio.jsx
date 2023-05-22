@@ -39,7 +39,7 @@ export default function Inicio() {
         </p>
       </div>
 
-      <div className=" grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+      <div className=" grid gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
         {productos.map((producto) => (
           <Producto producto={producto} key={producto.id} botonAgregar={true} />
         ))}

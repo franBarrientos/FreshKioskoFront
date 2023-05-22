@@ -19,6 +19,9 @@ export default function AdminSidebar() {
     event.preventDefault();
     setCategoriaAdmin(2);
   }
+  const logout = ()=>{
+    localStorage.removeItem('jwtToken');
+  }
   const classHover = " bg-amber-400 flex items-center gap-4 border w-full p-3 hover:bg-amber-400 hover:cursor-pointer"
   const classSinHover = "flex items-center gap-4 border w-full p-3 hover:bg-amber-400 hover:cursor-pointer"
   return (
@@ -37,6 +40,9 @@ export default function AdminSidebar() {
         </Link>
         <Link onClick={handleAgregarProducto} to="/admin/agregar" className={categoriaAdmin==2? classHover : classSinHover}>
             Agregar Producto
+        </Link>
+        <Link onClick={logout} to="/auth/login" className="bg-red-500 flex items-center gap-4 border w-full p-3 hover:bg-amber-400 hover:cursor-pointer">
+            Cerrar Sesion
         </Link>
 
     </aside>

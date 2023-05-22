@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import {  toast } from "react-toastify";
-
+import io from 'socket.io-client';
 import axios from "axios";
 
 const KioskoContext = createContext();
@@ -16,7 +16,7 @@ function KioskoProvider({ children }) {
   const [emailUser, setEmailUser] = useState({});
   const [categoriaAdmin, setCategoriaAdmin] = useState(3);
   const [productoAdmin, setProductoAdmin] = useState({});
-  const [jwtToken] = useState(localStorage.getItem('jwtToken'));
+  const socket = io('http://localhost:3000'); // Reemplaza la URL con la dirección de tu servidor
 
   const login = () => {
     setIsAuthenticated(true);
@@ -98,7 +98,7 @@ function KioskoProvider({ children }) {
         },
         {
           headers: {
-            Authorization: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
           },
         }
       );
@@ -107,6 +107,7 @@ function KioskoProvider({ children }) {
         setCarrito([]);
       }, 1000);
       setTimeout(() => {
+        localStorage.removeItem('jwtToken');
         setIsAuthenticated(false);
       }, 3000);
     } catch (error) {

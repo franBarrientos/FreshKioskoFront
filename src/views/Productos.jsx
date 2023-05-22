@@ -1,7 +1,6 @@
 import axios from "axios";
 import useSWR from "swr";
 import {  useState } from "react";
-
 import ProductoAdmin from "../components/ProductoAdmin";
 export default function Productos() {
   const [jwtToken] = useState(localStorage.getItem("jwtToken"));
